@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pari Madam Ji — Birthday Surprise</title>
+<style>
+:root {
+  --site-primary: #e85d9e;
+  --site-secondary: #ffd5e8;
+  --site-background: #fff0f7;
+  --site-on-primary: #ffffff;
+  --site-on-secondary: #7e2854;
+  --site-on-background: #73314f;
+  --site-font-body: "Trebuchet MS", "Segoe UI", sans-serif;
+  --site-font-heading: "Trebuchet MS", "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { font-family: var(--site-font-body); color: var(--site-on-background); background: var(--site-background); }
+#app { min-height: 100vh; width: 100%; position: relative; overflow: hidden; background-color: var(--site-background); background-image: radial-gradient(circle at 20% 15%, #ffffffb8 0 2px, transparent 3px), radial-gradient(circle at 80% 35%, #f6a8ce70 0 3px, transparent 4px), radial-gradient(circle at 65% 75%, #ffffffa8 0 2px, transparent 3px), linear-gradient(145deg, #fff1f8, #ffe0ef 48%, #fff6fb); }
+#app::before { content: "♡  ♥  ♡  ♥  ♡"; position: fixed; inset: 0; display: flex; align-items: center; justify-content: space-around; color: #e76aa4; opacity: .12; font-size: clamp(2rem, 7vw, 6rem); letter-spacing: 1rem; pointer-events: none; transform: rotate(-18deg) scale(1.25); white-space: nowrap; }
+main { position: relative; z-index: 1; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 28px 16px; }
+.screen { width: min(760px, 100%); text-align: center; animation: fadeIn .45s ease both; }
+.hidden { display: none !important; }
+.eyebrow { letter-spacing: .16em; text-transform: uppercase; font-size: .72rem; color: #b54b7e; font-weight: 700; }
+h1, h2, h3 { font-family: var(--site-font-heading); line-height: 1.15; }
+h1 { font-size: clamp(2.2rem, 7vw, 4.4rem); margin: 12px 0; color: #c43e7b; text-shadow: 0 3px 0 #fff; }
+h2 { color: #bf427c; font-size: clamp(1.7rem, 5vw, 2.5rem); margin: 10px 0 12px; }
+p { line-height: 1.7; }
+.subtitle { font-size: clamp(1rem, 2.5vw, 1.15rem); max-width: 520px; margin: 0 auto 22px; }
+.panel { background: #ffffffc9; border: 1px solid #f4bad4; border-radius: 28px; padding: clamp(22px, 5vw, 38px); box-shadow: 0 16px 42px #bc54831c; backdrop-filter: blur(8px); }
+.btn { appearance: none; border: 0; border-radius: 999px; background: var(--site-primary); color: white; font: inherit; font-weight: 700; padding: 13px 21px; cursor: pointer; box-shadow: 0 7px 0 #c84983; transition: transform .15s ease, box-shadow .15s ease; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 9px 0 #c84983; }
+.btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #c84983; }
+.btn.secondary { background: #fff; color: #b43b76; border: 1px solid #f0a7ca; box-shadow: 0 5px 0 #f1c4d9; }
+.float-layer { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; opacity: var(--site-decoration-opacity); }
+.heart { position: absolute; bottom: -80px; font-size: var(--size, 30px); color: #e95f9e; opacity: .8; animation: floatUp var(--duration, 12s) linear infinite; animation-delay: var(--delay, 0s); text-shadow: 0 2px 8px #e78bb733; white-space: nowrap; }
+.heart span { display: inline-block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: clamp(8px, 1.5vw, 12px); color: #8d2c5b; font-weight: 800; white-space: nowrap; }
+.pop-heart { position: fixed; z-index: 10; pointer-events: none; color: #e84f98; font-size: 24px; animation: heartPop 1.25s ease-out forwards; text-shadow: 0 2px 8px #e78bb755; }
+@keyframes heartPop { 0% { opacity: 0; transform: translate(-50%, -20%) scale(.3) rotate(-15deg); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--drift)), -110px) scale(1.35) rotate(18deg); } }
+.flame-row { display: flex; justify-content: center; gap: 18px; height: 32px; margin: 4px 0 -2px; font-size: 24px; }
+.flame-row span { display: inline-block; transform-origin: bottom center; animation: flicker .55s ease-in-out infinite alternate; filter: drop-shadow(0 0 7px #ffb347); }
+.flame-row span:nth-child(2) { animation-delay: -.2s; }
+.flame-row span:nth-child(3) { animation-delay: -.37s; }
+.cake-area.blown .flame-row { opacity: 0; transform: translateY(-12px) scale(.5); transition: .35s ease; }
+@keyframes flicker { from { transform: rotate(-8deg) scaleY(.9); } to { transform: rotate(8deg) scaleY(1.12); } }
+@keyframes floatUp { 0% { transform: translate3d(0, 0, 0) rotate(-10deg); } 50% { transform: translate3d(28px, -55vh, 0) rotate(10deg); } 100% { transform: translate3d(-12px, -115vh, 0) rotate(-8deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.choice { text-align: left; border: 1px solid #f2b5d1; border-radius: 22px; background: #fffafc; padding: 20px 17px; color: #783252; cursor: pointer; font: inherit; min-height: 180px; box-shadow: 0 8px 0 #f8d6e6; transition: transform .18s ease; }
+.choice:hover { transform: translateY(-4px); }
+.choice .emoji { display: block; font-size: 2rem; margin-bottom: 12px; }
+.choice strong { display: block; color: #bd3f79; font-size: 1.05rem; margin-bottom: 8px; }
+.choice small { line-height: 1.5; font-size: .88rem; }
+.navrow { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+.cake { font-size: clamp(5rem, 16vw, 9rem); line-height: 1.2; filter: drop-shadow(0 7px 0 #efb6d2); margin: 8px auto; animation: bob 2.8s ease-in-out infinite; }
+.cake-wish-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: center; margin-top: 20px; }
+.cake-area, .wish-area { min-width: 0; background: #fff8fb; border: 1px solid #f4c2d9; border-radius: 22px; padding: 18px; }
+.cake-area h3, .wish-area h3 { margin: 4px 0 10px; color: #bf427c; }
+@keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+.wishbox { display: flex; gap: 10px; max-width: 520px; margin: 18px auto 8px; }
+input, textarea { width: 100%; border: 1px solid #eaa3c5; border-radius: 15px; background: #fffafd; color: #73314f; padding: 13px 14px; font: inherit; outline-color: #e85d9e; }
+textarea { min-height: 130px; resize: vertical; }
+.note { font-size: .83rem; color: #99516f; }
+.password-panel { width: min(460px, 100%); margin: 0 auto; }
+.password-panel input { margin: 10px 0 14px; text-align: center; }
+.password-error { min-height: 24px; color: #b33674; font-weight: 700; }
+.envelope { font-size: 4rem; cursor: pointer; border: 0; background: transparent; transition: transform .2s ease; }
+.envelope:hover { transform: scale(1.08) rotate(-4deg); }
+.letter { text-align: left; background: #fffafc; border: 1px dashed #e98ab6; border-radius: 18px; padding: 22px; white-space: pre-line; }
+.mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+.mini { border: 1px solid #f1bdd4; background: #fff8fb; color: #8b355c; border-radius: 16px; padding: 14px 8px; font: inherit; cursor: pointer; }
+.mini b { display: block; font-size: 1.5rem; margin-bottom: 5px; }
+#toast { margin: 12px auto 0; min-height: 25px; color: #b33674; font-weight: 700; }
+@media (max-width: 620px) { .choices { grid-template-columns: 1fr; } .choice { min-height: auto; display: grid; grid-template-columns: 50px 1fr; column-gap: 10px; align-items: center; } .choice .emoji { grid-row: span 2; margin: 0; } .choice strong { margin: 0 0 4px; } .wishbox { flex-direction: column; } .mini-grid { grid-template-columns: 1fr; } .cake-wish-layout { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+  <main>
+    <section class="screen" id="passwordScreen">
+      <div class="panel password-panel">
+        <div class="eyebrow">a tiny secret just for you</div>
+        <h1>Pari Madam Ji 💗</h1>
+        <p class="subtitle">Is chhote se surprise ka secret password daalo, Madam Ji. 🎀</p>
+        <form onsubmit="unlockSurprise(event)">
+          <label for="secretPassword">Your secret password 💌</label>
+          <input id="secretPassword" type="password" autocomplete="off" placeholder="Enter the secret password" required>
+          <button class="btn" type="submit">Unlock My Surprise ✨</button>
+        </form>
+        <p class="password-error" id="passwordError" aria-live="polite"></p>
+        <p class="note">Hint tum use alag se bata dena. 💕</p>
+      </div>
+    </section>
+    <section class="screen" id="welcome">
+      <div class="panel">
+        <div class="eyebrow">a little surprise made just for you</div>
+        <h1>Happy Birthday,<br>Pari Madam Ji! 💗</h1>
+        <p class="subtitle">Aaj ka din tumhara hai, toh surprise bhi sirf tumhare liye. Ready ho, Madam Ji? 🎀</p>
+        <button class="btn" onclick="showScreen('menu')">Open Your Surprise ✨</button>
+        <p class="note">P.S. Smile karna compulsory hai. 💕</p>
+      </div>
+    </section>
+    <section class="screen hidden" id="menu">
+      <div class="panel">
+        <div class="eyebrow">choose your little surprise</div>
+        <h2>Madam Ji, pehle kya khologe? 💌</h2>
+        <p>Teen chhoti si cheezein tumhare liye. Jo dil kare, uspe tap karo.</p>
+        <div class="choices">
+          <button class="choice" onclick="showScreen('us')"><span class="emoji">💞</span><strong>A Little Piece of Us</strong><small>Hamari cute si baatein aur kuch chhote secrets.</small></button>
+          <button class="choice" onclick="showScreen('cakeScreen')"><span class="emoji">🎂</span><strong>Make a Wish, Madam Ji!</strong><small>Cake, birthday wishes aur tumhari ek wish.</small></button>
+          <button class="choice" onclick="showScreen('letterScreen')"><span class="emoji">💌</span><strong>Ek Letter Sirf Tumhare Liye</strong><small>Ek envelope mein chhupi dil ki baat.</small></button>
+        </div>
+      </div>
+    </section>
+    <section class="screen hidden" id="us">
+      <div class="panel">
+        <div class="eyebrow">a little piece of us</div>
+        <h2>Tumhari baari, Madam Ji 💗</h2>
+        <p>In cute cards par tap karo. Har ek mein tumhare liye ek chhoti si baat chhupi hai.</p>
+        <div class="mini-grid">
+          <button class="mini" onclick="reveal('special')"><b>✨</b>Why You're Special</button>
+          <button class="mini" onclick="reveal('names')"><b>💕</b>Our Cute Names</button>
+          <button class="mini" onclick="reveal('secret')"><b>🤫</b>One Little Secret</button>
+        </div>
+        <div id="toast" aria-live="polite"></div>
+        <div class="navrow"><button class="btn secondary" onclick="showScreen('menu')">← Back to surprises</button></div>
+      </div>
+    </section>
+    <section class="screen hidden" id="cakeScreen">
+      <div class="panel">
+        <div class="eyebrow">make a wish, madam ji</div>
+        <h2>Happy Birthday, Pari! 🎂</h2>
+        <p>Center mein birthday cake, aur side mein tumhari wish ke liye ek chhota sa surprise. 💫</p>
+        <div class="cake-wish-layout">
+          <div class="cake-area">
+            <h3>Happy Birthday, Pari! 🎂</h3>
+            <div class="flame-row" id="flameRow" aria-label="Flickering birthday candle flames"><span>🔥</span><span>🔥</span><span>🔥</span></div>
+            <div class="cake" aria-label="birthday cake">🎂</div>
+            <button class="btn" id="blowBtn" onclick="blowCandles()">Blow the Candles ✨</button>
+            <div id="candleMessage" aria-live="polite"></div>
+          </div>
+          <div class="wish-area">
+            <h3>Make a Wish 💌</h3>
+            <p class="note">Bolo Madam Ji, mujhse kya maangna chahti ho? Apni wish yahan likho.</p>
+            <div class="wishbox"><input id="wishInput" type="text" maxlength="300" placeholder="Your wish, Madam Ji…" aria-label="Your birthday wish"><button class="btn" onclick="sendWish()">Save My Wish 💗</button></div>
+            <p class="note">Abhi preview mein wish isi page par dikhegi. Real website par tujhe bhejne ka system baad mein add karenge.</p>
+            <div id="wishResult" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="navrow"><button class="btn secondary" onclick="showScreen('menu')">← Back to surprises</button></div>
+      </div>
+    </section>
+    <section class="screen hidden" id="letterScreen">
+      <div class="panel">
+        <div class="eyebrow">sealed with love</div>
+        <h2>Ek letter, sirf tumhare liye 💌</h2>
+        <p>Envelope par tap karo, Madam Ji.</p>
+        <button class="envelope" aria-label="Open the letter" onclick="openLetter()">💌</button>
+        <div class="letter hidden" id="letterContent">Dear Pari Madam Ji, 💗
+
+Pata nahi tumhe idea hai ya nahi, par tumse baat karna mere din ka ek special part hai. Tumhari chhoti-chhoti baatein aur tumhara hona mere liye bahut matter karta hai.
+
+Tum hamesha khush raho, tumhari wishes poori hon, aur tumhe life mein bahut saari pyaari cheezein milen. Aaj ka din tumhare jaisa hi special ho. 🎀
+
+Happy Birthday, Pari! 💕
+
+— tumhara dost</div>
+        <p class="note">Ye filhaal sample letter hai. Isse baad mein tere asli words se replace karenge.</p>
+        <div class="navrow"><button class="btn secondary" onclick="showScreen('menu')">← Back to surprises</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+const heartWords = ['Pari', 'Madam Ji', 'Angel', 'Cutie', 'Princess'];
+const floatLayer = document.getElementById('floatLayer');
+for (let i = 0; i < 18; i++) {
+  const heart = document.createElement('div');
+  heart.className = 'heart';
+  heart.style.left = (Math.random() * 100) + '%';
+  heart.style.setProperty('--size', (22 + Math.random() * 24) + 'px');
+  heart.style.setProperty('--duration', (10 + Math.random() * 12) + 's');
+  heart.style.setProperty('--delay', (-Math.random() * 20) + 's');
+  heart.innerHTML = '♥<span>' + heartWords[i % heartWords.length] + '</span>';
+  floatLayer.appendChild(heart);
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+// Simple client-side gate for a playful surprise, not real access control.
+// Change the demo password below before sharing the site.
+const secretPassword = 'Pari2026';
+function unlockSurprise(event) {
+  event.preventDefault();
+  const entered = document.getElementById('secretPassword').value;
+  const error = document.getElementById('passwordError');
+  if (entered === secretPassword) {
+    error.textContent = '';
+    document.getElementById('secretPassword').value = '';
+    showScreen('welcome');
+    popHearts(8);
+  } else {
+    error.textContent = 'Oops! Password sahi nahi hai, Madam Ji. 💗';
+    document.getElementById('secretPassword').select();
+  }
+}
+function reveal(type) {
+  const messages = {
+    special: 'Tumhari presence hi kisi normal din ko special bana sakti hai. Tum jaisi ho, waise hi amazing ho. 💗',
+    names: 'Pari, Madam Ji, Angel, Cutie, Princess… har naam ke saath ek alag si smile judi hai. 🎀',
+    secret: 'Ek last secret, Pari Madam Ji… I LOVE YOU. 💗🥹 Happy Birthday, meri favourite person. — tumhara dost 💌'
+  };
+  document.getElementById('toast').textContent = messages[type];
+  popHearts(12);
+}
+function blowCandles() {
+  document.querySelector('.cake-area').classList.add('blown');
+  document.getElementById('candleMessage').innerHTML = '<p style="font-weight:800;color:#bf427c">Whoooosh! ✨ Wish maang li? Ab woh wish dil mein safe rakhna. 💗</p>';
+  document.getElementById('blowBtn').textContent = 'Candles Blown! 🥳';
+  popHearts(18);
+}
+function sendWish() {
+  const wish = document.getElementById('wishInput').value.trim();
+  const result = document.getElementById('wishResult');
+  if (!wish) { result.innerHTML = '<p style="color:#b33674">Pehle apni wish likho, Madam Ji. 💌</p>'; return; }
+  result.innerHTML = '<div class="letter"><strong>Your wish is saved on this preview 💗</strong><p>' + escapeHtml(wish) + '</p><p class="note">Abhi ye sirf isi page par save hai. Real website mein tujhe bhejne ka system baad mein setup karenge.</p></div>';
+  popHearts(10);
+}
+function escapeHtml(text) { return text.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+function openLetter() { document.getElementById('letterContent').classList.remove('hidden'); }
+function popHearts(count = 8) {
+  for (let i = 0; i < count; i++) {
+    const heart = document.createElement('span');
+    heart.className = 'pop-heart';
+    heart.textContent = ['♥', '💗', '💕', '♡'][Math.floor(Math.random() * 4)];
+    heart.style.left = (12 + Math.random() * 76) + 'vw';
+    heart.style.top = (42 + Math.random() * 38) + 'vh';
+    heart.style.setProperty('--drift', (Math.random() * 120 - 60) + 'px');
+    heart.style.animationDelay = (Math.random() * .25) + 's';
+    document.body.appendChild(heart);
+    heart.addEventListener('animationend', () => heart.remove(), { once: true });
+  }
+}
+</script>
+</body>
+</html>
